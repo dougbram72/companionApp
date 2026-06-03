@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/KeypadCompanion/KeypadCompanion.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/KeypadCompanion.Tests/KeypadCompanion.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,26 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="KeypadCompanion.App"
+             x:CompileBindings="False"
+             RequestedThemeVariant="Default">
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="/Assets/avalonia-logo.ico"
+                      ToolTipText="ESP8266 Keypad Companion"
+                      Command="{Binding ShowWindowCommand}">
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="Open" Command="{Binding ShowWindowCommand}" />
+                        <NativeMenuItem Header="Reconnect" Command="{Binding ReconnectCommand}" />
+                        <NativeMenuItemSeparator />
+                        <NativeMenuItem Header="Exit" Command="{Binding ExitCommand}" />
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
+</Application>

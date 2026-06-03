@@ -1,0 +1,38 @@
+# .NET build outputs
+bin/
+obj/
+.artifacts/
+artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Arduino / ESP8266 (not part of companion app)
+build/
+.arduino-cli/
+libraries/
+*.ino
+.arduino-cli.yaml
+
+# Arduino scripts (not part of companion app)
+scripts/compile.ps1
+scripts/install-toolchain.ps1
+scripts/monitor.ps1
+scripts/upload.ps1
+
+# Publish output
+artifacts/
+
+# OS
+.DS_Store
+Thumbs.db

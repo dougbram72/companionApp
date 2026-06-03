@@ -1,0 +1,272 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:KeypadCompanion.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1380" d:DesignHeight="900"
+        x:Class="KeypadCompanion.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ESP8266 Keypad Companion"
+        MinWidth="1200"
+        MinHeight="820">
+    <Grid ColumnDefinitions="1*,1*" RowDefinitions="Auto,*" Margin="16">
+        <Border Grid.ColumnSpan="2"
+                Padding="12"
+                CornerRadius="14"
+                Background="#142032"
+                BorderBrush="#29364C"
+                BorderThickness="1">
+            <Grid ColumnDefinitions="Auto,180,Auto,Auto,Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                <TextBlock Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" FontWeight="SemiBold" Text="Serial" />
+                <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding AvailablePorts}" SelectedItem="{Binding SelectedPort}" />
+                <Button Grid.Column="2" Grid.Row="0" Content="Refresh" Command="{Binding RefreshPortsCommand}" />
+                <Button Grid.Column="3" Grid.Row="0" Content="Connect" Command="{Binding ConnectCommand}" />
+                <Button Grid.Column="4" Grid.Row="0" Content="Disconnect" Command="{Binding DisconnectCommand}" />
+                <TextBlock Grid.Column="5" Grid.Row="0" VerticalAlignment="Center" Text="{Binding ConnectionStatus}" />
+
+                <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" FontWeight="SemiBold" Text="WiFi" />
+                <TextBox   Grid.Column="1" Grid.Row="1" PlaceholderText="192.168.x.x" Text="{Binding WifiIp}" />
+                <Button    Grid.Column="2" Grid.Row="1" Content="Settings" Command="{Binding OpenWifiSettingsCommand}" />
+                <Button    Grid.Column="3" Grid.Row="1" Content="Connect WiFi" Command="{Binding ConnectWifiCommand}" />
+                <Button    Grid.Column="4" Grid.Row="1" Content="Disconnect WiFi" Command="{Binding DisconnectWifiCommand}" />
+                <TextBlock Grid.Column="5" Grid.Row="1" VerticalAlignment="Center"
+                           Text="Connected" Foreground="#5BC8FF"
+                           IsVisible="{Binding IsWifiConnected}" />
+
+                <TextBlock Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" FontWeight="SemiBold" Text="Selected Input" />
+                <TextBlock Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Text="{Binding SelectedInputLabel}" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto,220,*,Auto" RowSpacing="16" Margin="0,16,16,0">
+            <Border Padding="16"
+                    CornerRadius="16"
+                    Background="#101826"
+                    BorderBrush="#2B3446"
+                    BorderThickness="1">
+                <StackPanel Spacing="8">
+                    <TextBlock FontSize="24" FontWeight="SemiBold" Text="Actions" />
+                    <TextBlock Text="{Binding AssignmentHint}" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Padding="16"
+                    CornerRadius="16"
+                    Background="#101826"
+                    BorderBrush="#2B3446"
+                    BorderThickness="1">
+                <Grid RowDefinitions="Auto,*" RowSpacing="12">
+                    <TextBlock FontSize="20" FontWeight="SemiBold" Text="Saved Actions" />
+                    <ListBox Grid.Row="1"
+                             MinHeight="0"
+                             HorizontalAlignment="Stretch"
+                             ItemsSource="{Binding ActionPresets}"
+                             SelectedItem="{Binding SelectedActionPreset}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ActionPresetViewModel">
+                                <Grid ColumnDefinitions="170,*" Margin="0,4">
+                                    <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Summary}" TextWrapping="Wrap" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="2"
+                    Padding="16"
+                    CornerRadius="16"
+                    Background="#101826"
+                    BorderBrush="#2B3446"
+                    BorderThickness="1">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="12">
+                        <TextBlock FontSize="20" FontWeight="SemiBold" Text="{Binding PresetEditorTitle}" />
+
+                        <TextBlock Text="Action name" />
+                        <TextBox PlaceholderText="Optional. Defaults to the action summary."
+                                 Text="{Binding ActionPresetName}" />
+
+                        <TextBlock Text="Action type" />
+                        <ComboBox ItemsSource="{Binding AvailableActionTypes}" SelectedItem="{Binding SelectedActionType}" />
+
+                        <TextBlock Text="Key icon" />
+                        <ComboBox ItemsSource="{Binding AvailableIconOptions}" SelectedItem="{Binding SelectedIconDisplay}" />
+
+                        <StackPanel IsVisible="{Binding IsHotkeySelected}" Spacing="6">
+                            <TextBlock Text="Hotkey chord" />
+                            <TextBox PlaceholderText="Ctrl+Shift+M" Text="{Binding HotkeyChord}" />
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsTextSelected}" Spacing="6">
+                            <TextBlock Text="Text snippet" />
+                            <TextBox AcceptsReturn="True" Height="90" Text="{Binding TextSnippet}" TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsLaunchSelected}" Spacing="6">
+                            <TextBlock Text="Application or file path" />
+                            <TextBox Text="{Binding LaunchFilePath}" />
+                            <TextBlock Text="Arguments" />
+                            <TextBox Text="{Binding LaunchArguments}" />
+                            <TextBlock Text="Working directory" />
+                            <TextBox Text="{Binding LaunchWorkingDirectory}" />
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsUrlSelected}" Spacing="6">
+                            <TextBlock Text="URL" />
+                            <TextBox Text="{Binding Url}" />
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsShellSelected}" Spacing="6">
+                            <TextBlock Text="Executable" />
+                            <TextBox Text="{Binding ShellFileName}" />
+                            <TextBlock Text="Arguments" />
+                            <TextBox Text="{Binding ShellArguments}" />
+                            <TextBlock Text="Working directory" />
+                            <TextBox Text="{Binding ShellWorkingDirectory}" />
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsVolumeSelected}" Spacing="6">
+                            <TextBlock Text="Volume delta percent" />
+                            <TextBox Text="{Binding VolumeDeltaPercentText}" />
+                        </StackPanel>
+
+                        <TextBlock IsVisible="{Binding IsMuteSelected}" Text="This action toggles mute on the default playback device." TextWrapping="Wrap" />
+
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10" Margin="0,8,0,0">
+                            <Button Grid.Column="0" Content="New Action" Command="{Binding NewActionPresetCommand}" />
+                            <Button Grid.Column="1" Content="Save Action" Command="{Binding SaveActionPresetCommand}" />
+                            <Button Grid.Column="2" Content="Delete Action" Command="{Binding DeleteActionPresetCommand}" />
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <Border Grid.Row="3"
+                    Padding="16"
+                    CornerRadius="16"
+                    Background="#101826"
+                    BorderBrush="#2B3446"
+                    BorderThickness="1">
+                <StackPanel Spacing="10">
+                    <TextBlock FontSize="20" FontWeight="SemiBold" Text="Settings" />
+                    <CheckBox Content="Auto-connect last successful COM port" IsChecked="{Binding AutoConnect}" />
+                    <CheckBox Content="Minimize to tray" IsChecked="{Binding MinimizeToTray}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Long press (ms)" />
+                            <TextBox Text="{Binding LongPressMillisecondsText}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="4">
+                            <TextBlock Text="Double click (ms)" />
+                            <TextBox Text="{Binding DoubleClickMillisecondsText}" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="16" Margin="0,16,0,0">
+            <Border Padding="18"
+                    CornerRadius="18"
+                    Background="#111927"
+                    BorderBrush="#2B3446"
+                    BorderThickness="1">
+                <StackPanel Spacing="18">
+                    <TextBlock FontSize="24" FontWeight="SemiBold" Text="Keypad" />
+                    <TextBlock Opacity="0.8" Text="Left-click to inspect. Right-click to assign a saved action." />
+                    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="*,*" ColumnSpacing="12" RowSpacing="12">
+                        <Button x:Name="Key1Button" Grid.Row="0" Grid.Column="0" Padding="18" Background="{Binding Key1.Background}" BorderBrush="{Binding Key1.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding Key1.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Key1.DisplayName}" />
+                        </Button>
+                        <Button x:Name="Key2Button" Grid.Row="0" Grid.Column="1" Padding="18" Background="{Binding Key2.Background}" BorderBrush="{Binding Key2.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding Key2.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Key2.DisplayName}" />
+                        </Button>
+                        <Button x:Name="Key3Button" Grid.Row="0" Grid.Column="2" Padding="18" Background="{Binding Key3.Background}" BorderBrush="{Binding Key3.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding Key3.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Key3.DisplayName}" />
+                        </Button>
+                        <Button x:Name="Key4Button" Grid.Row="0" Grid.Column="3" Padding="18" Background="{Binding Key4.Background}" BorderBrush="{Binding Key4.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding Key4.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Key4.DisplayName}" />
+                        </Button>
+                        <Button x:Name="Key5Button" Grid.Row="1" Grid.Column="0" Padding="18" Background="{Binding Key5.Background}" BorderBrush="{Binding Key5.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding Key5.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Key5.DisplayName}" />
+                        </Button>
+                        <Button x:Name="Key6Button" Grid.Row="1" Grid.Column="1" Padding="18" Background="{Binding Key6.Background}" BorderBrush="{Binding Key6.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding Key6.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Key6.DisplayName}" />
+                        </Button>
+                        <Button x:Name="Key7Button" Grid.Row="1" Grid.Column="2" Padding="18" Background="{Binding Key7.Background}" BorderBrush="{Binding Key7.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding Key7.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Key7.DisplayName}" />
+                        </Button>
+                        <Button x:Name="Key8Button" Grid.Row="1" Grid.Column="3" Padding="18" Background="{Binding Key8.Background}" BorderBrush="{Binding Key8.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding Key8.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Key8.DisplayName}" />
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Padding="18"
+                    CornerRadius="18"
+                    Background="#111927"
+                    BorderBrush="#2B3446"
+                    BorderThickness="1">
+                <StackPanel Spacing="16">
+                    <TextBlock FontSize="24" FontWeight="SemiBold" Text="Encoder" />
+                    <Grid ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="14" HorizontalAlignment="Left">
+                        <Button x:Name="EncoderCounterClockwiseButton" Grid.Column="0" Width="88" Height="88" Background="{Binding EncoderCounterClockwise.Background}" BorderBrush="{Binding EncoderCounterClockwise.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding EncoderCounterClockwise.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding EncoderCounterClockwise.DisplayName}" />
+                        </Button>
+                        <Button x:Name="EncoderButtonButton" Grid.Column="1" Width="104" Height="104" Background="{Binding EncoderButton.Background}" BorderBrush="{Binding EncoderButton.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding EncoderButton.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding EncoderButton.DisplayName}" />
+                        </Button>
+                        <Button x:Name="EncoderClockwiseButton" Grid.Column="2" Width="88" Height="88" Background="{Binding EncoderClockwise.Background}" BorderBrush="{Binding EncoderClockwise.BorderBrush}" BorderThickness="2" Command="{Binding SelectInputCommand}" CommandParameter="{Binding EncoderClockwise.InputId}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding EncoderClockwise.DisplayName}" />
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="2"
+                    Padding="18"
+                    CornerRadius="18"
+                    Background="#111927"
+                    BorderBrush="#2B3446"
+                    BorderThickness="1">
+                <Grid RowDefinitions="Auto,*" RowSpacing="12">
+                    <TextBlock FontSize="20" FontWeight="SemiBold" Text="Bindings For Selected Input" />
+                    <ListBox Grid.Row="1"
+                             MinHeight="0"
+                             HorizontalAlignment="Stretch"
+                             ItemsSource="{Binding BindingSlots}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:BindingSlotViewModel">
+                                <Grid ColumnDefinitions="120,*" Margin="0,4">
+                                    <TextBlock FontWeight="SemiBold" Text="{Binding TriggerLabel}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Summary}" TextWrapping="Wrap" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="3"
+                    Padding="18"
+                    CornerRadius="18"
+                    Background="#111927"
+                    BorderBrush="#2B3446"
+                    BorderThickness="1">
+                <Grid RowDefinitions="Auto,*" RowSpacing="12">
+                    <TextBlock FontSize="20" FontWeight="SemiBold" Text="Event Log" />
+                    <ListBox Grid.Row="1"
+                             MinHeight="0"
+                             HorizontalAlignment="Stretch"
+                             ItemsSource="{Binding EventLogEntries}" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

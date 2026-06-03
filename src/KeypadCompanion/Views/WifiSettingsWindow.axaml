@@ -1,0 +1,49 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:KeypadCompanion.ViewModels"
+        x:Class="KeypadCompanion.Views.WifiSettingsWindow"
+        x:DataType="vm:WifiSettingsViewModel"
+        Title="WiFi Settings"
+        Width="480"
+        Height="420"
+        CanResize="True"
+        MinWidth="400"
+        MinHeight="380"
+        WindowStartupLocation="CenterOwner">
+    <Border Padding="24" Background="#101826">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="14">
+            <TextBlock FontSize="22" FontWeight="SemiBold" Text="WiFi Configuration" />
+            <TextBlock Opacity="0.7" TextWrapping="Wrap"
+                       Text="Enter your WiFi network credentials and click Send. The device must be connected via USB/serial first." />
+
+            <Grid ColumnDefinitions="80,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="8">
+                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="SSID" />
+                <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding Ssid}" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Text="Password" />
+                <TextBox   Grid.Row="1" Grid.Column="1" PasswordChar="•" Text="{Binding Password}" />
+            </Grid>
+
+            <Button Content="Send to Device"
+                    Command="{Binding SendToDeviceCommand}"
+                    HorizontalAlignment="Left"
+                    Padding="14,6" />
+
+            <TextBlock Text="{Binding Status}" TextWrapping="Wrap" Opacity="0.85" />
+
+            <Border IsVisible="{Binding HasDiscoveredIp}"
+                    Padding="16" CornerRadius="8"
+                    Background="#192840" BorderBrush="#2B5C8A" BorderThickness="1">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Device IP address" Opacity="0.7" FontSize="13" />
+                    <TextBlock Text="{Binding DiscoveredIp}"
+                               FontSize="24" FontWeight="Bold" Foreground="#5BC8FF" />
+                    <TextBlock Text="Use this IP in the main window to connect via WiFi."
+                               Opacity="0.6" FontSize="12" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        </ScrollViewer>
+    </Border>
+</Window>
